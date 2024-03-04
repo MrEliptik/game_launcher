@@ -1,0 +1,63 @@
+[gd_scene load_steps=7 format=3 uid="uid://dh01oxe50pj27"]
+
+[ext_resource type="Script" path="res://scenes/app/scripts/app.gd" id="1_ov0up"]
+[ext_resource type="PackedScene" uid="uid://dweckt5oraox7" path="res://scenes/game_button/game_button.tscn" id="2_t5myg"]
+[ext_resource type="Shader" path="res://scenes/shared/shaders/blur.gdshader" id="3_n8sr3"]
+
+[sub_resource type="Gradient" id="Gradient_m3r77"]
+colors = PackedColorArray(0.907942, 0.907942, 0.907942, 1, 0.762404, 0.762404, 0.762404, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_4ga57"]
+gradient = SubResource("Gradient_m3r77")
+width = 1280
+height = 720
+fill_from = Vector2(0.610619, 0)
+fill_to = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qsltc"]
+shader = ExtResource("3_n8sr3")
+shader_parameter/lod = 2.919
+
+[node name="App" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ov0up")
+game_button = ExtResource("2_t5myg")
+button_offset = Vector2(75, 0)
+
+[node name="GradientBG" type="TextureRect" parent="."]
+self_modulate = Color(0.486275, 0.486275, 0.486275, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_4ga57")
+
+[node name="GradientBG2" type="TextureRect" parent="."]
+self_modulate = Color(0.486275, 0.486275, 0.486275, 1)
+material = SubResource("ShaderMaterial_qsltc")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_4ga57")
+
+[node name="Games" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -100.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
