@@ -2,3 +2,4 @@
 .godot/
 build/*
 games/*
+!/games/.gdignore
