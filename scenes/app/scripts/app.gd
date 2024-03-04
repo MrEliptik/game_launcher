@@ -1,7 +1,6 @@
 extends Control
 
 @export var game_button: PackedScene
-@export var button_offset: Vector2
 
 var pid_watching: int = -1
 var games: Dictionary
@@ -17,7 +16,14 @@ func _ready() -> void:
 	var base_dir: String = ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 	create_game_folder(base_dir)
 	parse_games(base_dir.path_join("games"))
-	create_game_buttons(games)
+	
+	if games.is_empty():
+		no_game_found.visible = true
+	
+	var buttons: Array = games_container.create_game_buttons(game_button, games)
+	for b in buttons:
+		b.focused.connect(on_game_btn_focused)
+		b.toggled.connect(on_game_btn_toggled.bind(b))
 	
 	# Test
 	#launch_game("Dashpong")
@@ -40,26 +46,6 @@ func _input(event):
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		else:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-
-func create_game_buttons(to_create: Dictionary) -> void:
-	# TODO: create a carrousel container to handle everything
-	var count: int = 0
-	for key in to_create.keys():
-		var instance: Button = game_button.instantiate()
-		instance.game_name = key
-		instance.properties = to_create[key]
-		games_container.add_child(instance)
-		instance.position -= instance.size / 2.0
-		instance.position.x += (instance.size.x + button_offset.x) * count
-		instance.focused.connect(on_game_btn_focused)
-		instance.toggled.connect(on_game_btn_toggled.bind(instance))
-		count += 1
-	
-	if games_container.get_child_count() == 0: 
-		no_game_found.visible = true
-		return
-	no_game_found.visible = false
-	games_container.get_child(0).grab_focus()
 
 func configure_timer() -> void:
 	add_child(timer)
