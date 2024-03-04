@@ -6,6 +6,7 @@ var game_name: String
 var properties: Dictionary
 
 @onready var capsule: TextureRect = $Capsule
+@onready var cross = $Cross
 
 func _ready() -> void:
 	if properties.has("capsule"):
@@ -28,3 +29,6 @@ func _on_focus_entered() -> void:
 
 func _on_mouse_entered() -> void:
 	focused.emit(self)
+
+func _on_toggled(toggled_on):
+	cross.visible = toggled_on

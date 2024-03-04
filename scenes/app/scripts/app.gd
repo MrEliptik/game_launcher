@@ -5,10 +5,12 @@ extends Control
 
 var pid_watching: int = -1
 var games: Dictionary
+var curr_game_btn: Button = null
 
 @onready var gradient_bg: TextureRect = $GradientBG
 @onready var timer: Timer = Timer.new()
 @onready var games_container: Control = $Games
+@onready var no_game_found = $NoGameFound
 
 func _ready() -> void:
 	configure_timer()
@@ -24,17 +26,20 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("About to quit, killing process")
 		if pid_watching > 0:
-			OS.kill(pid_watching)
+			stop_game(pid_watching)
 			
 			# Maybe use a softer method, by sending a WM_CLOSE message first
 			# windows only
 			# NOT TESTED YET
 			#taskkill /PID pid_watching
 			#OS.execute(taskkill, ("/PID", str(pid_watching)])
-	elif what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
-		print("Focus exit")
-	elif what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
-		print("Focus enter")
+
+func _input(event):
+	if Input.is_action_just_pressed("toggle_fullscreen"):
+		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		else:
+			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 func create_game_buttons(to_create: Dictionary) -> void:
 	# TODO: create a carrousel container to handle everything
@@ -47,10 +52,13 @@ func create_game_buttons(to_create: Dictionary) -> void:
 		instance.position -= instance.size / 2.0
 		instance.position.x += (instance.size.x + button_offset.x) * count
 		instance.focused.connect(on_game_btn_focused)
-		instance.pressed.connect(on_game_btn_pressed.bind(instance))
+		instance.toggled.connect(on_game_btn_toggled.bind(instance))
 		count += 1
 	
-	if games_container.get_child_count() < 0: return
+	if games_container.get_child_count() == 0: 
+		no_game_found.visible = true
+		return
+	no_game_found.visible = false
 	games_container.get_child(0).grab_focus()
 
 func configure_timer() -> void:
@@ -112,6 +120,9 @@ func launch_game(game_name: String) -> void:
 	#pid_watching = OS.create_process("C:\\Users\\Victor\\Documents\\dev\\TOOLS\\GameLauncher\\games\\Dashpong\\dashpong.exe", [])
 	timer.start()
 
+func stop_game(pid: int) -> void:
+	OS.kill(pid)
+
 func on_timer_timeout() -> void:
 	if OS.is_process_running(pid_watching):
 		print("Running")
@@ -119,6 +130,9 @@ func on_timer_timeout() -> void:
 		print("Stopped")
 		timer.stop()
 		pid_watching = -1
+		if curr_game_btn:
+			curr_game_btn.button_pressed = false
+		DisplayServer.window_move_to_foreground()
 
 func on_game_btn_focused(who: Button) -> void:
 	if not who.properties.has("bg"): return
@@ -126,5 +140,11 @@ func on_game_btn_focused(who: Button) -> void:
 	if not texture: return
 	gradient_bg.texture = texture
 
-func on_game_btn_pressed(btn: Button) -> void:
-	launch_game(btn.game_name)
+func on_game_btn_toggled(state: bool, btn: Button) -> void:
+	# If game already launched, don't launch another one
+	if state:
+		if pid_watching > 0: return
+		launch_game(btn.game_name)
+		curr_game_btn = btn
+	else:
+		stop_game(pid_watching)
