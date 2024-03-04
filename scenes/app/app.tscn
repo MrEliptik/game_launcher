@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dh01oxe50pj27"]
+[gd_scene load_steps=8 format=3 uid="uid://dh01oxe50pj27"]
 
 [ext_resource type="Script" path="res://scenes/app/scripts/app.gd" id="1_ov0up"]
 [ext_resource type="PackedScene" uid="uid://dweckt5oraox7" path="res://scenes/game_button/game_button.tscn" id="2_t5myg"]
 [ext_resource type="Shader" path="res://scenes/shared/shaders/blur.gdshader" id="3_n8sr3"]
+[ext_resource type="Script" path="res://scenes/app/scripts/version.gd" id="4_df76v"]
 
 [sub_resource type="Gradient" id="Gradient_m3r77"]
 colors = PackedColorArray(0.907942, 0.907942, 0.907942, 1, 0.762404, 0.762404, 0.762404, 1)
@@ -81,3 +82,23 @@ theme_override_font_sizes/font_size = 22
 text = "No games found"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Version" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -52.0
+offset_right = -24.0
+offset_bottom = -21.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 22
+text = "0.1.3"
+horizontal_alignment = 2
+vertical_alignment = 1
+autowrap_mode = 2
+script = ExtResource("4_df76v")
