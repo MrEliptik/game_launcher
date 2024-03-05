@@ -1,15 +1,18 @@
 extends Control
 
 @export var game_button: PackedScene
+@export var default_bg: Texture
 
 var pid_watching: int = -1
 var games: Dictionary
 var curr_game_btn: Button = null
 
-@onready var gradient_bg: TextureRect = $GradientBG
+@onready var bg: TextureRect = $BG
 @onready var timer: Timer = Timer.new()
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
+@onready var title: Label = $Description/Title
+@onready var description: Label = $Description/Description
 
 func _ready() -> void:
 	configure_timer()
@@ -93,6 +96,11 @@ func parse_games(path: String) -> void:
 								games[file_name]["capsule"] = subdir.get_current_dir().path_join(file)
 							elif file.get_basename() == "bg":
 								games[file_name]["bg"] = subdir.get_current_dir().path_join(file)
+						"txt":
+							if file.get_basename() == "description":
+								var text_file = FileAccess.open(subdir.get_current_dir().path_join(file), FileAccess.READ)
+								var content = text_file.get_as_text()
+								games[file_name]["description"] = content
 					
 				file = subdir.get_next()
 			
@@ -121,10 +129,24 @@ func on_timer_timeout() -> void:
 		DisplayServer.window_move_to_foreground()
 
 func on_game_btn_focused(who: Button) -> void:
-	if not who.properties.has("bg"): return
+	if not who.properties.has("description"):
+		description.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+	else:
+		description.text = who.properties["description"]
+	
+	title.text = who.game_name
+
+	if not who.properties.has("bg"): 
+		#bg.texture = default_bg
+		bg.blend_textures_animated(bg.get_shader_texture(1), default_bg, 0.4)
+		return
 	var texture: ImageTexture = who.load_image_texture(who.properties["bg"])
-	if not texture: return
-	gradient_bg.texture = texture
+	if not texture: 
+		bg.blend_textures_animated(bg.get_shader_texture(1), default_bg, 0.4)
+		#bg.texture = default_bg
+		return
+	bg.blend_textures_animated(bg.get_shader_texture(1), texture, 0.4)
+	#bg.texture = texture
 
 func on_game_btn_toggled(state: bool, btn: Button) -> void:
 	# If game already launched, don't launch another one

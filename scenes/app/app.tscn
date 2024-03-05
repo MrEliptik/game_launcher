@@ -1,24 +1,24 @@
-[gd_scene load_steps=9 format=3 uid="uid://dh01oxe50pj27"]
+[gd_scene load_steps=12 format=3 uid="uid://dh01oxe50pj27"]
 
 [ext_resource type="Script" path="res://scenes/app/scripts/app.gd" id="1_ov0up"]
 [ext_resource type="PackedScene" uid="uid://dweckt5oraox7" path="res://scenes/game_button/game_button.tscn" id="2_t5myg"]
+[ext_resource type="Texture2D" uid="uid://dt4qwfs1yjhx3" path="res://scenes/shared/visuals/gradient_bg.tres" id="3_0g1gi"]
 [ext_resource type="Shader" path="res://scenes/shared/shaders/blur.gdshader" id="3_n8sr3"]
+[ext_resource type="Shader" path="res://scenes/shared/shaders/texture_blend.gdshader" id="4_7um57"]
 [ext_resource type="Script" path="res://scenes/app/scripts/version.gd" id="4_df76v"]
 [ext_resource type="Script" path="res://scenes/carousel/scripts/carousel.gd" id="4_yrr54"]
+[ext_resource type="Texture2D" uid="uid://dph8j6sb0fjbv" path="res://scenes/game_button/visuals/bg_test.png" id="5_o0uvn"]
+[ext_resource type="Script" path="res://scenes/app/scripts/bg_blend.gd" id="6_2ddv3"]
 
-[sub_resource type="Gradient" id="Gradient_m3r77"]
-colors = PackedColorArray(0.907942, 0.907942, 0.907942, 1, 0.762404, 0.762404, 0.762404, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_4ga57"]
-gradient = SubResource("Gradient_m3r77")
-width = 1280
-height = 720
-fill_from = Vector2(0.610619, 0)
-fill_to = Vector2(1, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_psg6v"]
+shader = ExtResource("4_7um57")
+shader_parameter/mix_value = 0.0
+shader_parameter/texture_1 = ExtResource("3_0g1gi")
+shader_parameter/texture_2 = ExtResource("5_o0uvn")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qsltc"]
 shader = ExtResource("3_n8sr3")
-shader_parameter/lod = 2.919
+shader_parameter/lod = 4.731
 
 [node name="App" type="Control"]
 process_mode = 3
@@ -30,16 +30,19 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_ov0up")
 game_button = ExtResource("2_t5myg")
+default_bg = ExtResource("3_0g1gi")
 
-[node name="GradientBG" type="TextureRect" parent="."]
+[node name="BG" type="TextureRect" parent="."]
 self_modulate = Color(0.486275, 0.486275, 0.486275, 1)
+material = SubResource("ShaderMaterial_psg6v")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("GradientTexture2D_4ga57")
+texture = ExtResource("3_0g1gi")
+script = ExtResource("6_2ddv3")
 
 [node name="GradientBG2" type="TextureRect" parent="."]
 self_modulate = Color(0.486275, 0.486275, 0.486275, 1)
@@ -50,7 +53,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("GradientTexture2D_4ga57")
+texture = ExtResource("3_0g1gi")
+
+[node name="Darken" type="ColorRect" parent="."]
+self_modulate = Color(1, 1, 1, 0.4)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.121569, 0.121569, 0.121569, 1)
 
 [node name="Games" type="Control" parent="."]
 layout_mode = 1
@@ -104,3 +117,41 @@ horizontal_alignment = 2
 vertical_alignment = 1
 autowrap_mode = 2
 script = ExtResource("4_df76v")
+
+[node name="Description" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = 141.0
+offset_right = 360.0
+offset_bottom = 507.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "Game name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Description" type="Label" parent="Description"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 24
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+autowrap_mode = 3
+
+[node name="MouseFilter" type="ColorRect" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
