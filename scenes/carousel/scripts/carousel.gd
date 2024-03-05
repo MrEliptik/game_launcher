@@ -27,7 +27,8 @@ func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Arr
 		count += 1
 	
 	if get_child_count() > 0: 
-		get_child(0).grab_focus()
+		# Call deferred to make sure the app has time to connect focus signal and react accordingly
+		get_child(0).call_deferred("grab_focus")
 		
 	return get_children() 
 
