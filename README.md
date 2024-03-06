@@ -28,6 +28,12 @@ game_launcher.exe
 
 You can also check the **Fake** folder to see a game example
 
+## How to navigate
+
+Navigate using keyboard or gamepad using the usual keys used for navigation (arrows keys, enter).
+
+`alt+enter` to toggle fullscreen
+
 ## Limitations
 
 Right now, the launcher is only working with windows. Supporting linux and mac shouldn't be complicated, we just need to detect the correct extensions or file types. 
