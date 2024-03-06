@@ -43,19 +43,18 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="Cross" type="TextureRect" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 40.0
-offset_top = 60.0
-offset_right = -40.0
-offset_bottom = -59.0
+offset_left = 111.0
+offset_top = 168.0
+offset_right = -111.0
+offset_bottom = -166.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_js23g")
-expand_mode = 5
+expand_mode = 1
 stretch_mode = 5
 
 [connection signal="focus_entered" from="." to="." method="_on_focus_entered"]

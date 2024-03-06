@@ -86,7 +86,7 @@ func parse_games(path: String) -> void:
 			while file != "":
 				if not subdir.current_is_dir():
 					var extension: String = file.get_extension()
-					#TODO: make functionnal with other platforms
+					#TODO: make functionnal with other platforms: mac, linux
 					match extension:
 						"exe":
 							print(subdir.get_current_dir())
@@ -109,12 +109,13 @@ func parse_games(path: String) -> void:
 	
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
+	games_container.can_move = false
 	var executable_path: String = games[game_name]["executable"]
 	pid_watching = OS.create_process(executable_path, [])
-	#pid_watching = OS.create_process("C:\\Users\\Victor\\Documents\\dev\\TOOLS\\GameLauncher\\games\\Dashpong\\dashpong.exe", [])
 	timer.start()
 
 func stop_game(pid: int) -> void:
+	games_container.can_move = true
 	OS.kill(pid)
 
 func on_timer_timeout() -> void:
@@ -152,6 +153,7 @@ func on_game_btn_toggled(state: bool, btn: Button) -> void:
 	# If game already launched, don't launch another one
 	if state:
 		if pid_watching > 0: return
+		games_container.can_move = false
 		launch_game(btn.game_name)
 		curr_game_btn = btn
 	else:

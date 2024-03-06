@@ -10,11 +10,14 @@ var tween: Tween
 @onready var cross = $Cross
 
 func _ready() -> void:
+	pivot_offset = size / 2.0
+	
+	cross.visible = false
+	
 	if properties.has("capsule"):
 		var tex: ImageTexture = load_image_texture(properties["capsule"])
 		if not tex: return
 		capsule.texture = tex
-	pivot_offset = size / 2.0
 
 func load_image_texture(path: String) -> ImageTexture:
 	var capsule_im: Image = Image.new()
