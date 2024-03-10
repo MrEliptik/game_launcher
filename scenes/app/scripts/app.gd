@@ -13,8 +13,15 @@ var curr_game_btn: Button = null
 @onready var no_game_found = $NoGameFound
 @onready var title: Label = $Description/Title
 @onready var description: Label = $Description/Description
+@onready var version_btn = $VersionBtn
+
+@onready var update_checker := UpdateChecker.new()
 
 func _ready() -> void:
+	add_child(update_checker)
+	update_checker.get_latest_version()
+	update_checker.release_parsed.connect(on_released_parsed)
+	
 	configure_timer()
 	var base_dir: String = ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 	create_game_folder(base_dir)
@@ -86,9 +93,9 @@ func parse_games(path: String) -> void:
 			while file != "":
 				if not subdir.current_is_dir():
 					var extension: String = file.get_extension().to_lower()
-					#TODO: make functionnal with other platforms: mac, linux
+					#TODO: make functionnal with other platforms: mac
 					match extension:
-						"exe":
+						"exe", "x86_64":
 							print(subdir.get_current_dir())
 							games[file_name]["executable"] = subdir.get_current_dir().path_join(file)
 						"jpg", "jpeg", "png":
@@ -158,3 +165,12 @@ func on_game_btn_toggled(state: bool, btn: Button) -> void:
 		curr_game_btn = btn
 	else:
 		stop_game(pid_watching)
+
+func on_released_parsed(release: Dictionary) -> void:
+	print("release: ", release["version"])
+
+	if release["new"]:
+		version_btn.text = "New version available: " + release["version"]
+	else:
+		version_btn.text = "You have the latest version: " + release["version"]
+	version_btn.uri = release["url"]

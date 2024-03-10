@@ -21,12 +21,14 @@ process_mode = 1
 offset_right = 336.0
 offset_bottom = 507.0
 pivot_offset = Vector2(168, 253.5)
+mouse_filter = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_dcdjw")
 theme_override_styles/hover = SubResource("StyleBoxFlat_q7ifx")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_xr24c")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_pfxkt")
 theme_override_styles/focus = SubResource("StyleBoxFlat_q7ifx")
 toggle_mode = true
+button_mask = 0
 script = ExtResource("1_ggd64")
 
 [node name="Capsule" type="TextureRect" parent="."]
