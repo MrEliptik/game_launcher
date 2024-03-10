@@ -85,7 +85,7 @@ func parse_games(path: String) -> void:
 			var file = subdir.get_next()
 			while file != "":
 				if not subdir.current_is_dir():
-					var extension: String = file.get_extension()
+					var extension: String = file.get_extension().to_lower()
 					#TODO: make functionnal with other platforms: mac, linux
 					match extension:
 						"exe":
