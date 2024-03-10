@@ -3,3 +3,4 @@
 build/*
 games/*
 !/games/.gdignore
+!/build/release_local.py
