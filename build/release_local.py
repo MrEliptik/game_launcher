@@ -17,9 +17,9 @@ exe_name_linux = game_name+'.x86_64'
 project_file = "project.godot"
 export_preset_file = "export_presets.cfg"
 
-windows_template = "win"
-linux_template = "linux"
-mac_template = "mac"
+windows_template = "game_launcher_win"
+linux_template = "game_launcher_linux"
+mac_template = "game_launcher_mac"
 
 templates = [windows_template, linux_template, mac_template]
 
@@ -71,7 +71,7 @@ def parse_build_nb_from_file(file):
 
 def upload_gh(files, build_nb, prerelease=False):
     print("    |---> Uploading build: {}, prerelease: {}".format(build_nb, prerelease))
-    cmd = [gh_cli_path, 'release', 'create', 'v'+build_nb]
+    cmd = [gh_cli_path, 'release', 'create', build_nb]
     for file in files:
         cmd.append(file)
     cmd.append('--generate-notes')
