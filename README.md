@@ -1,6 +1,6 @@
 # Game launcher
 
-A simple game launcher for developer wanting to showcase their games. Especially useful during gaming conventions for example. 
+A simple game launcher for developers to showcase their games. Especially useful during gaming conventions for example. 
 
 *⚠ It's not aimed as being shipped with your game on Steam or other platforms.*
 
