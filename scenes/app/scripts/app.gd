@@ -41,14 +41,13 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("About to quit, killing process")
-		if pid_watching > 0:
-			stop_game(pid_watching)
-			
-			# Maybe use a softer method, by sending a WM_CLOSE message first
-			# windows only
-			# NOT TESTED YET
-			#taskkill /PID pid_watching
-			#OS.execute(taskkill, ("/PID", str(pid_watching)])
+		stop_game(pid_watching)
+		
+		# Maybe use a softer method, by sending a WM_CLOSE message first
+		# windows only
+		# NOT TESTED YET
+		#taskkill /PID pid_watching
+		#OS.execute(taskkill, ("/PID", str(pid_watching)])
 
 func _input(event):
 	if Input.is_action_just_pressed("toggle_fullscreen"):
@@ -56,6 +55,9 @@ func _input(event):
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		else:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+			
+	if event.is_action_pressed("kill"):
+		stop_game(pid_watching)
 
 func configure_timer() -> void:
 	add_child(timer)
@@ -122,6 +124,7 @@ func launch_game(game_name: String) -> void:
 	timer.start()
 
 func stop_game(pid: int) -> void:
+	if pid_watching < 0: return
 	games_container.can_move = true
 	OS.kill(pid)
 
