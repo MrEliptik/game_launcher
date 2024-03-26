@@ -12,6 +12,7 @@ config_version=5
 
 config/name="game_launcher"
 config/version="0.0.2"
+config/tags=PackedStringArray("tool")
 run/main_scene="res://scenes/app/app.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 run/low_processor_mode=true
