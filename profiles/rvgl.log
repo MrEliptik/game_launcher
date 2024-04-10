@@ -1,0 +1,13 @@
+RVGL Error Log File
+Compilation date: 19:38:47, Oct 27 2023
+Architecture: Linux (64-bit x86)
+Build: 23.1030a1
+
+Loading: packs/default.txt: Not Found
+
+Error: Game data appears to be missing!
+Timer Frequency: 1000000000
+
+Loading: profiles/rvgl.ini: Found
+Error: Can't find any languages
+Loading: profiles/rvgl.ini: Found

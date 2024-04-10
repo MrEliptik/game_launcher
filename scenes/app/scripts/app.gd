@@ -13,6 +13,7 @@ var curr_game_btn: Button = null
 @onready var no_game_found = $NoGameFound
 @onready var title: Label = $Description/Title
 @onready var description: Label = $Description/Description
+@onready var arguments: Label = $Description/Arguments
 @onready var version_btn = $VersionBtn
 
 @onready var update_checker := UpdateChecker.new()
@@ -110,6 +111,10 @@ func parse_games(path: String) -> void:
 								var text_file = FileAccess.open(subdir.get_current_dir().path_join(file), FileAccess.READ)
 								var content = text_file.get_as_text()
 								games[file_name]["description"] = content
+							if file.get_basename() == "arguments":
+								var text_file = FileAccess.open(subdir.get_current_dir().path_join(file), FileAccess.READ)
+								var content = text_file.get_as_text()
+								games[file_name]["arguments"] = content
 					
 				file = subdir.get_next()
 			
@@ -120,7 +125,15 @@ func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
 	games_container.can_move = false
 	var executable_path: String = games[game_name]["executable"]
-	pid_watching = OS.create_process(executable_path, [])
+	if  games[game_name].has("arguments"):
+		var executable_arguments: String = games[game_name]["arguments"]
+		pid_watching = OS.create_process(executable_path, [executable_arguments])
+	else:
+		#OS.set_environment("LD_LIBRARY_PATH",'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:LD_LIBRARY_PATH"/home/tim/PM/game_launcher_RD/games/RVGL/libs.x86_64/"')
+		#print(OS.get_environment("LD_LIBRARY_PATH"))
+		pid_watching = OS.create_process(executable_path,[])
+		
+		#pid_watching = OS.execute("exec",[executable_path],[])
 	timer.start()
 
 func stop_game(pid: int) -> void:
@@ -134,6 +147,7 @@ func on_timer_timeout() -> void:
 	else:
 		print("Stopped")
 		timer.stop()
+		stop_game(pid_watching)
 		pid_watching = -1
 		if curr_game_btn:
 			curr_game_btn.button_pressed = false
@@ -146,6 +160,11 @@ func on_game_btn_focused(who: Button) -> void:
 		description.text = who.properties["description"]
 	
 	title.text = who.game_name
+	
+	if not who.properties.has("arguments"):
+		arguments.text = ""
+	else:
+		arguments.text = who.properties["arguments"]
 
 	if not who.properties.has("bg"): 
 		#bg.texture = default_bg

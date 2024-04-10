@@ -146,6 +146,12 @@ theme_override_font_sizes/font_size = 24
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 autowrap_mode = 3
 
+[node name="Arguments" type="Label" parent="Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MouseFilter" type="ColorRect" parent="."]
 visible = false
 self_modulate = Color(1, 1, 1, 0)
