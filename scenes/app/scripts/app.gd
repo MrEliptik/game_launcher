@@ -98,7 +98,7 @@ func parse_games(path: String) -> void:
 					var extension: String = file.get_extension().to_lower()
 					#TODO: make functionnal with other platforms: mac
 					match extension:
-						"exe", "x86_64":
+						"exe", "x86_64", "sh":
 							print(subdir.get_current_dir())
 							games[file_name]["executable"] = subdir.get_current_dir().path_join(file)
 						"jpg", "jpeg", "png":
@@ -111,10 +111,11 @@ func parse_games(path: String) -> void:
 								var text_file = FileAccess.open(subdir.get_current_dir().path_join(file), FileAccess.READ)
 								var content = text_file.get_as_text()
 								games[file_name]["description"] = content
+						"cfg":
 							if file.get_basename() == "arguments":
 								var text_file = FileAccess.open(subdir.get_current_dir().path_join(file), FileAccess.READ)
-								var content = text_file.get_as_text()
-								games[file_name]["arguments"] = content
+								var args = text_file.get_as_text()
+								games[file_name]["arguments"] = args
 					
 				file = subdir.get_next()
 			
@@ -129,17 +130,14 @@ func launch_game(game_name: String) -> void:
 		var executable_arguments: String = games[game_name]["arguments"]
 		pid_watching = OS.create_process(executable_path, [executable_arguments])
 	else:
-		#OS.set_environment("LD_LIBRARY_PATH",'LD_LIBRARY_PATH=$LD_LIBRARY_PATH:LD_LIBRARY_PATH"/home/tim/PM/game_launcher_RD/games/RVGL/libs.x86_64/"')
-		#print(OS.get_environment("LD_LIBRARY_PATH"))
-		pid_watching = OS.create_process(executable_path,[])
-		
-		#pid_watching = OS.execute("exec",[executable_path],[])
+		pid_watching = OS.execute(executable_path,[])
 	timer.start()
 
 func stop_game(pid: int) -> void:
 	if pid_watching < 0: return
 	games_container.can_move = true
-	OS.kill(pid)
+	print("Stopping PID: ", pid)
+	#OS.kill(pid)
 
 func on_timer_timeout() -> void:
 	if OS.is_process_running(pid_watching):
