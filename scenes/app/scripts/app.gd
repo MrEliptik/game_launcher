@@ -43,7 +43,6 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("About to quit, killing process")
 		stop_game(pid_watching)
-		
 		# Maybe use a softer method, by sending a WM_CLOSE message first
 		# windows only
 		# NOT TESTED YET
