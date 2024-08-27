@@ -137,6 +137,7 @@ func on_timer_timeout() -> void:
 		pid_watching = -1
 		if curr_game_btn:
 			curr_game_btn.button_pressed = false
+		games_container.can_move = true
 		DisplayServer.window_move_to_foreground()
 
 func on_game_btn_focused(who: Button) -> void:
