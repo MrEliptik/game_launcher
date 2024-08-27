@@ -4,17 +4,17 @@
 [ext_resource type="Texture2D" uid="uid://bpxmqyewmqdev" path="res://scenes/game_button/visuals/capsule_test.png" id="1_q6lu3"]
 [ext_resource type="Texture2D" uid="uid://rg5y0f8we0t4" path="res://scenes/game_button/visuals/cross.png" id="3_js23g"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dcdjw"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7ifx"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_color = Color(1, 1, 1, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pfxkt"]
+bg_color = Color(0.239216, 0.239216, 0.239216, 0.647059)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xr24c"]
 bg_color = Color(0, 0.780392, 0.305882, 0.27451)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pfxkt"]
-bg_color = Color(0.239216, 0.239216, 0.239216, 0.647059)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dcdjw"]
 
 [node name="Game" type="Button"]
 process_mode = 1
@@ -22,11 +22,11 @@ offset_right = 336.0
 offset_bottom = 507.0
 pivot_offset = Vector2(168, 253.5)
 mouse_filter = 2
-theme_override_styles/normal = SubResource("StyleBoxEmpty_dcdjw")
+theme_override_styles/focus = SubResource("StyleBoxFlat_q7ifx")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_pfxkt")
 theme_override_styles/hover = SubResource("StyleBoxFlat_q7ifx")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_xr24c")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_pfxkt")
-theme_override_styles/focus = SubResource("StyleBoxFlat_q7ifx")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dcdjw")
 toggle_mode = true
 button_mask = 0
 script = ExtResource("1_ggd64")

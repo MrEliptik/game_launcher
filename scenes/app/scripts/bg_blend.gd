@@ -23,5 +23,3 @@ func blend_textures_animated(texture_1: Texture, texture_2: Texture, duration: f
 		tween.kill()
 	tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	tween.tween_method(blend_textures, 0.0, 1.0, duration)
-
-
