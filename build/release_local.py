@@ -5,7 +5,7 @@ import shutil
 import configparser
 from datetime import datetime
 
-godot_path = "C:\Program Files\Godot\Godot_v4_2_1-stable_win64_exe\Godot_v4.2.1-stable_win64.exe"
+godot_path = "C:\Program Files\Godot\Godot_v4_3-stable_win64_exe\Godot_v4.3-stable_win64.exe"
 gh_cli_path = 'C:\Program Files\GitHub CLI\gh.exe'
 
 build_path = "build/"
