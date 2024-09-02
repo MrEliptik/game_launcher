@@ -11,8 +11,8 @@ var curr_game_btn: Button = null
 @onready var timer: Timer = Timer.new()
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
-@onready var title: Label = $Description/Title
-@onready var description: Label = $Description/Description
+@onready var title: Label = $PanelContainer/Description/Title
+@onready var description: Label = $PanelContainer/Description/Description
 @onready var version_btn = $VersionBtn
 
 @onready var update_checker := UpdateChecker.new()

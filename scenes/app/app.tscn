@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dh01oxe50pj27"]
+[gd_scene load_steps=13 format=3 uid="uid://dh01oxe50pj27"]
 
 [ext_resource type="Script" path="res://scenes/app/scripts/app.gd" id="1_ov0up"]
 [ext_resource type="PackedScene" uid="uid://dweckt5oraox7" path="res://scenes/game_button/game_button.tscn" id="2_t5myg"]
@@ -19,6 +19,13 @@ shader_parameter/texture_2 = ExtResource("5_o0uvn")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qsltc"]
 shader = ExtResource("3_n8sr3")
 shader_parameter/lod = 4.731
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6y87"]
+content_margin_left = 20.0
+content_margin_top = 10.0
+content_margin_right = 20.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0313726, 0.0313726, 0.0313726, 0.419608)
 
 [node name="App" type="Control"]
 process_mode = 3
@@ -117,29 +124,34 @@ underline = 1
 uri = "https://api.github.com/repos/MrEliptik/GameLauncher/releases/latest"
 script = ExtResource("4_df76v")
 
-[node name="Description" type="VBoxContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 7
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = 141.0
-offset_right = 360.0
-offset_bottom = 507.0
+anchor_bottom = 1.0
+offset_left = -382.0
+offset_top = -367.0
+offset_right = 382.0
+offset_bottom = -49.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_w6y87")
+
+[node name="Description" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="Description"]
+[node name="Title" type="Label" parent="PanelContainer/Description"]
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 38
 text = "Game name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Description" type="Label" parent="Description"]
+[node name="Description" type="Label" parent="PanelContainer/Description"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 24

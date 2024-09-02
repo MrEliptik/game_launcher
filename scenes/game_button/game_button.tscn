@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://dweckt5oraox7"]
+[gd_scene load_steps=10 format=3 uid="uid://dweckt5oraox7"]
 
 [ext_resource type="Script" path="res://scenes/game_button/scripts/game_button.gd" id="1_ggd64"]
 [ext_resource type="Texture2D" uid="uid://bpxmqyewmqdev" path="res://scenes/game_button/visuals/capsule_test.png" id="1_q6lu3"]
@@ -15,6 +15,13 @@ bg_color = Color(0.239216, 0.239216, 0.239216, 0.647059)
 bg_color = Color(0, 0.780392, 0.305882, 0.27451)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dcdjw"]
+
+[sub_resource type="Gradient" id="Gradient_y2hvx"]
+colors = PackedColorArray(5.17406e-07, 0, 0.332346, 0.752941, 0, 0, 0.333333, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7argf"]
+gradient = SubResource("Gradient_y2hvx")
+fill_from = Vector2(1, 1)
 
 [node name="Game" type="Button"]
 process_mode = 1
@@ -58,6 +65,17 @@ grow_vertical = 2
 texture = ExtResource("3_js23g")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="Gradient" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.854
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.0219727
+grow_horizontal = 2
+grow_vertical = 0
+texture = SubResource("GradientTexture2D_7argf")
 
 [connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
 [connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
