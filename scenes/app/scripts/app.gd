@@ -115,7 +115,24 @@ func parse_games(path: String) -> void:
 			
 		file_name = dir.get_next()
 	print("Games: ", games)
-	
+
+func parse_config(path: String):
+	var config = ConfigFile.new()
+
+	# Load data from a file.
+	var err = config.load(path)
+
+	# If the file didn't load, ignore it.
+	if err != OK:
+		return
+
+	# Iterate over all sections.
+	for player in config.get_sections():
+		pass
+		# Fetch the data for each section.
+		#var player_name = config.get_value(player, "player_name")
+		#var player_score = config.get_value(player, "best_score")
+
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
 	games_container.can_move = false

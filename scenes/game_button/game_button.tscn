@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dweckt5oraox7"]
+[gd_scene load_steps=12 format=3 uid="uid://dweckt5oraox7"]
 
 [ext_resource type="Script" path="res://scenes/game_button/scripts/game_button.gd" id="1_ggd64"]
 [ext_resource type="Texture2D" uid="uid://bpxmqyewmqdev" path="res://scenes/game_button/visuals/capsule_test.png" id="1_q6lu3"]
 [ext_resource type="Texture2D" uid="uid://rg5y0f8we0t4" path="res://scenes/game_button/visuals/cross.png" id="3_js23g"]
+[ext_resource type="Texture2D" uid="uid://ctwblwukcxf8" path="res://icon.svg" id="4_bj6ij"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7ifx"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -22,6 +23,9 @@ colors = PackedColorArray(5.17406e-07, 0, 0.332346, 0.752941, 0, 0, 0.333333, 0)
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_7argf"]
 gradient = SubResource("Gradient_y2hvx")
 fill_from = Vector2(1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_u381n"]
+font_size = 18
 
 [node name="Game" type="Button"]
 process_mode = 1
@@ -76,6 +80,58 @@ offset_top = 0.0219727
 grow_horizontal = 2
 grow_vertical = 0
 texture = SubResource("GradientTexture2D_7argf")
+
+[node name="InfoContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = -37.0
+offset_right = -15.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PlatformContainer" type="HBoxContainer" parent="InfoContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="InfoContainer/PlatformContainer"]
+custom_minimum_size = Vector2(37, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("4_bj6ij")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Platform" type="Label" parent="InfoContainer/PlatformContainer"]
+layout_mode = 2
+text = "Steam, Itch - 2022"
+label_settings = SubResource("LabelSettings_u381n")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PlayerContainer" type="HBoxContainer" parent="InfoContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+alignment = 2
+
+[node name="TextureRect2" type="TextureRect" parent="InfoContainer/PlayerContainer"]
+custom_minimum_size = Vector2(37, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+texture = ExtResource("4_bj6ij")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayerNb" type="Label" parent="InfoContainer/PlayerContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "1"
+label_settings = SubResource("LabelSettings_u381n")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
 [connection signal="focus_exited" from="." to="." method="_on_focus_exited"]

@@ -21,10 +21,10 @@ shader = ExtResource("3_n8sr3")
 shader_parameter/lod = 4.731
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6y87"]
-content_margin_left = 20.0
-content_margin_top = 10.0
-content_margin_right = 20.0
-content_margin_bottom = 10.0
+content_margin_left = 40.0
+content_margin_top = 15.0
+content_margin_right = 40.0
+content_margin_bottom = 15.0
 bg_color = Color(0.0313726, 0.0313726, 0.0313726, 0.419608)
 
 [node name="App" type="Control"]
@@ -131,10 +131,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -382.0
-offset_top = -367.0
-offset_right = 382.0
-offset_bottom = -49.0
+offset_left = -386.0
+offset_top = -397.0
+offset_right = 386.0
+offset_bottom = -71.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_w6y87")
@@ -155,7 +155,8 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 24
-text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="MouseFilter" type="ColorRect" parent="."]

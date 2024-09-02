@@ -18,6 +18,15 @@ func _ready() -> void:
 		var tex: ImageTexture = load_image_texture(properties["capsule"])
 		if not tex: return
 		capsule.texture = tex
+		
+	if properties.has("platforms"):
+		pass
+	
+	if properties.has("release_date"):
+		pass
+	
+	if properties.has("players_nb"):
+		pass
 
 func load_image_texture(path: String) -> ImageTexture:
 	var capsule_im: Image = Image.new()
