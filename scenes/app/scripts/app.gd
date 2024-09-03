@@ -11,10 +11,12 @@ var curr_game_btn: Button = null
 @onready var timer: Timer = Timer.new()
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
-@onready var title: Label = $HBoxContainer/PanelContainer/MarginContainer/Description/Title
-@onready var description: Label = $HBoxContainer/PanelContainer/MarginContainer/Description/Description
+@onready var title: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/Title
+@onready var description: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/Description
 @onready var version_btn = $VersionBtn
-@onready var qr_rect: TextureRect = $HBoxContainer/QRRect
+@onready var qr_container: VBoxContainer = $PanelContainer/MarginContainer/HBoxContainer/QRContainer
+@onready var qr_rect: TextureRect = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRRect
+@onready var qr_label: Label = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRLabel
 
 @onready var update_checker := UpdateChecker.new()
 
@@ -162,7 +164,8 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["release_date"] = config.get_value("GAME", "release_date")
 	dict["platforms"] = config.get_value("GAME", "platforms")
 	dict["arguments"] = config.get_value("GAME", "arguments")
-	dict["qr_url"] = config.get_value("GAME", "qr_url")
+	dict["qr_url"] = config.get_value("GAME", "qr_url", null)
+	dict["qr_label"] = config.get_value("GAME", "qr_label", "")
 	dict["order"] = config.get_value("SETTINGS", "order")
 	dict["visible"] = config.get_value("SETTINGS", "visible")
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
@@ -206,9 +209,10 @@ func on_game_btn_focused(who: Button) -> void:
 	if not qr_url.is_empty():
 		var texture: ImageTexture = qr_generator.get_texture(qr_url)
 		qr_rect.texture = texture
-		qr_rect.visible = true
+		qr_container.visible = true
+		qr_label.text = who.properties["qr_label"]
 	else:
-		qr_rect.visible = false
+		qr_container.visible = false
 		#TODO resize the description label accordingly?
 	
 	title.text = who.game_name
