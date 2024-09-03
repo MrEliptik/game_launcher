@@ -164,7 +164,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["release_date"] = config.get_value("GAME", "release_date")
 	dict["platforms"] = config.get_value("GAME", "platforms")
 	dict["arguments"] = config.get_value("GAME", "arguments")
-	dict["qr_url"] = config.get_value("GAME", "qr_url", null)
+	dict["qr_url"] = config.get_value("GAME", "qr_url", "")
 	dict["qr_label"] = config.get_value("GAME", "qr_label", "")
 	dict["order"] = config.get_value("SETTINGS", "order")
 	dict["visible"] = config.get_value("SETTINGS", "visible")
