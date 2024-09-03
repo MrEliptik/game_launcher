@@ -54,13 +54,15 @@ func toggle_focus_visuals(state: bool) -> void:
 	tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
 	if state:
 		tween.tween_property(self, "scale", Vector2(1.15, 1.15), 0.2)
-		tween.parallel().tween_property(info_container, "modulate:a", 1.0, 0.25)
-		tween.parallel().tween_property(gradient, "modulate:a", 1.0, 0.25)
+		if platform.text != "" or player_nb.text != "":
+			tween.parallel().tween_property(info_container, "modulate:a", 1.0, 0.25)
+			tween.parallel().tween_property(gradient, "modulate:a", 1.0, 0.25)
 		#tween.tween_property(self, "rotation_degrees", 360.0, 0.2).from(0.0)
 	else:
 		tween.tween_property(self, "scale", Vector2.ONE, 0.4)
-		tween.parallel().tween_property(info_container, "modulate:a", 0.0, 0.25)
-		tween.parallel().tween_property(gradient, "modulate:a", 0.0, 0.25)
+		if platform.text != "" or player_nb.text != "":
+			tween.parallel().tween_property(info_container, "modulate:a", 0.0, 0.25)
+			tween.parallel().tween_property(gradient, "modulate:a", 0.0, 0.25)
 		#tween.tween_property(self, "rotation_degrees", -360.0, 0.3).from(0.0)
 
 func _on_focus_entered() -> void:
