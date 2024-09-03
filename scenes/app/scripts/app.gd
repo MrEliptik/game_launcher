@@ -11,11 +11,14 @@ var curr_game_btn: Button = null
 @onready var timer: Timer = Timer.new()
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
-@onready var title: Label = $PanelContainer/MarginContainer/Description/Title
-@onready var description: Label = $PanelContainer/MarginContainer/Description/Description
+@onready var title: Label = $HBoxContainer/PanelContainer/MarginContainer/Description/Title
+@onready var description: Label = $HBoxContainer/PanelContainer/MarginContainer/Description/Description
 @onready var version_btn = $VersionBtn
+@onready var qr_rect: TextureRect = $HBoxContainer/QRRect
 
 @onready var update_checker := UpdateChecker.new()
+
+var qr_generator: QrCode = null
 
 func _ready() -> void:
 	add_child(update_checker)
@@ -26,6 +29,10 @@ func _ready() -> void:
 	var base_dir: String = ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 	create_game_folder(base_dir)
 	parse_games(base_dir.path_join("games"))
+	
+	#configure QR generator
+	qr_generator = QrCode.new()
+	qr_generator.error_correct_level = QrCode.ErrorCorrectionLevel.LOW
 	
 	if games.is_empty():
 		no_game_found.visible = true
@@ -155,6 +162,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["release_date"] = config.get_value("GAME", "release_date")
 	dict["platforms"] = config.get_value("GAME", "platforms")
 	dict["arguments"] = config.get_value("GAME", "arguments")
+	dict["qr_url"] = config.get_value("GAME", "qr_url")
 	dict["order"] = config.get_value("SETTINGS", "order")
 	dict["visible"] = config.get_value("SETTINGS", "visible")
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
@@ -192,6 +200,16 @@ func on_game_btn_focused(who: Button) -> void:
 		description.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 	else:
 		description.text = who.properties["description"]
+	
+	# Also works in .ini has no "qr_url" property
+	var qr_url: String = who.properties.get("qr_url") if who.properties.get("qr_url") else ""
+	if not qr_url.is_empty():
+		var texture: ImageTexture = qr_generator.get_texture(qr_url)
+		qr_rect.texture = texture
+		qr_rect.visible = true
+	else:
+		qr_rect.visible = false
+		#TODO resize the description label accordingly?
 	
 	title.text = who.game_name
 

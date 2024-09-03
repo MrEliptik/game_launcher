@@ -120,32 +120,38 @@ underline = 1
 uri = "https://api.github.com/repos/MrEliptik/GameLauncher/releases/latest"
 script = ExtResource("4_df76v")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -386.0
-offset_top = -373.0
-offset_right = 386.0
-offset_bottom = -215.0
+offset_left = -650.0
+offset_top = -400.0
+offset_right = 650.0
+offset_bottom = -150.0
 grow_horizontal = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_w6y87")
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/PanelContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 40
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 25
 
-[node name="Description" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+[node name="Description" type="VBoxContainer" parent="HBoxContainer/PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="PanelContainer/MarginContainer/Description"]
+[node name="Title" type="Label" parent="HBoxContainer/PanelContainer/MarginContainer/Description"]
 visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 38
@@ -153,13 +159,20 @@ text = "Game name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Description" type="Label" parent="PanelContainer/MarginContainer/Description"]
+[node name="Description" type="Label" parent="HBoxContainer/PanelContainer/MarginContainer/Description"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 24
 text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 vertical_alignment = 1
 autowrap_mode = 3
+
+[node name="QRRect" type="TextureRect" parent="HBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 10
+expand_mode = 2
+stretch_mode = 4
 
 [node name="MouseFilter" type="ColorRect" parent="."]
 visible = false
