@@ -132,7 +132,7 @@ offset_top = -400.0
 offset_right = 650.0
 offset_bottom = -150.0
 grow_horizontal = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 150
 
 [node name="PanelContainer" type="PanelContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -170,7 +170,7 @@ autowrap_mode = 3
 [node name="QRRect" type="TextureRect" parent="HBoxContainer"]
 texture_filter = 1
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 expand_mode = 2
 stretch_mode = 4
 
