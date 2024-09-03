@@ -11,8 +11,8 @@ var curr_game_btn: Button = null
 @onready var timer: Timer = Timer.new()
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
-@onready var title: Label = $PanelContainer/Description/Title
-@onready var description: Label = $PanelContainer/Description/Description
+@onready var title: Label = $PanelContainer/MarginContainer/Description/Title
+@onready var description: Label = $PanelContainer/MarginContainer/Description/Description
 @onready var version_btn = $VersionBtn
 
 @onready var update_checker := UpdateChecker.new()
@@ -97,6 +97,10 @@ func parse_games(path: String) -> void:
 					var extension: String = file.get_extension().to_lower()
 					#TODO: make functionnal with other platforms: mac
 					match extension:
+						"ini", "cfg":
+							parse_config(subdir.get_current_dir().path_join(file), subdir.get_current_dir(), games[file_name])
+							# Config file found, skipping all other files
+							break
 						"exe", "x86_64":
 							print(subdir.get_current_dir())
 							games[file_name]["executable"] = subdir.get_current_dir().path_join(file)
@@ -116,28 +120,54 @@ func parse_games(path: String) -> void:
 		file_name = dir.get_next()
 	print("Games: ", games)
 
-func parse_config(path: String):
+func parse_config(path: String, dir: String, dict: Dictionary):
+	#[GAME]
+	#title = "Sample Game Title"
+	#executable = "game.exe"
+	#capsule = "capsule.png"
+	#background = "bg.png"
+	#description = "Here is a text blurb. \n\n Or use description.txt."
+	#category = ["Tools", "Tests"]
+	#notice = "Coming Soon"
+	#arguments = "--fullscreen"
+#
+	#[SETTINGS]
+	#order = 1
+	#visible = true
+	#pinned = false
+#
+	#[ATTRIBUTES]
+	#players_nb = 1
+	
 	var config = ConfigFile.new()
-
 	# Load data from a file.
 	var err = config.load(path)
-
 	# If the file didn't load, ignore it.
 	if err != OK:
 		return
 
-	# Iterate over all sections.
-	for player in config.get_sections():
-		pass
-		# Fetch the data for each section.
-		#var player_name = config.get_value(player, "player_name")
-		#var player_score = config.get_value(player, "best_score")
+	# Fetch the data for each section.
+	dict["executable"] = dir.path_join(config.get_value("GAME", "executable"))
+	dict["capsule"] = dir.path_join(config.get_value("GAME", "capsule"))
+	dict["bg"] = dir.path_join(config.get_value("GAME", "background"))
+	dict["description"] = config.get_value("GAME", "description")
+	dict["players_nb"] = config.get_value("GAME", "players_nb")
+	dict["release_date"] = config.get_value("GAME", "release_date")
+	dict["platforms"] = config.get_value("GAME", "platforms")
+	dict["arguments"] = config.get_value("GAME", "arguments")
+	dict["order"] = config.get_value("SETTINGS", "order")
+	dict["visible"] = config.get_value("SETTINGS", "visible")
+	dict["pinned"] = config.get_value("SETTINGS", "pinned")
 
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
 	games_container.can_move = false
 	var executable_path: String = games[game_name]["executable"]
-	pid_watching = OS.create_process(executable_path, [])
+	if games[game_name].has("arguments"):
+		var args: PackedStringArray = games[game_name]["arguments"].rsplit(",", false)
+		pid_watching = OS.create_process(executable_path, args)
+	else:
+		pid_watching = OS.create_process(executable_path, [])
 	timer.start()
 
 func stop_game(pid: int) -> void:

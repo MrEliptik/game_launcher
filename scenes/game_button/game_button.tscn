@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://dweckt5oraox7"]
+[gd_scene load_steps=13 format=3 uid="uid://dweckt5oraox7"]
 
 [ext_resource type="Script" path="res://scenes/game_button/scripts/game_button.gd" id="1_ggd64"]
 [ext_resource type="Texture2D" uid="uid://bpxmqyewmqdev" path="res://scenes/game_button/visuals/capsule_test.png" id="1_q6lu3"]
 [ext_resource type="Texture2D" uid="uid://rg5y0f8we0t4" path="res://scenes/game_button/visuals/cross.png" id="3_js23g"]
-[ext_resource type="Texture2D" uid="uid://ctwblwukcxf8" path="res://icon.svg" id="4_bj6ij"]
+[ext_resource type="Texture2D" uid="uid://bk0cbuq1a6hxa" path="res://scenes/game_button/visuals/icon_monitor.png" id="4_doxw5"]
+[ext_resource type="Texture2D" uid="uid://bdvpjif5brpw3" path="res://scenes/game_button/visuals/icon_gamepad.png" id="5_he8gh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q7ifx"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -18,10 +19,12 @@ bg_color = Color(0, 0.780392, 0.305882, 0.27451)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dcdjw"]
 
 [sub_resource type="Gradient" id="Gradient_y2hvx"]
-colors = PackedColorArray(5.17406e-07, 0, 0.332346, 0.752941, 0, 0, 0.333333, 0)
+interpolation_mode = 2
+colors = PackedColorArray(2.4667e-07, 0, 0.245282, 0.835294, 0, 0, 0.333333, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_7argf"]
 gradient = SubResource("Gradient_y2hvx")
+height = 128
 fill_from = Vector2(1, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_u381n"]
@@ -73,13 +76,14 @@ stretch_mode = 5
 [node name="Gradient" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 0.854
+anchor_top = 0.822
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 0.0219727
+offset_top = 1.24597
 grow_horizontal = 2
 grow_vertical = 0
 texture = SubResource("GradientTexture2D_7argf")
+expand_mode = 1
 
 [node name="InfoContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -87,10 +91,10 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = -37.0
-offset_right = -15.0
-offset_bottom = -11.0
+offset_left = 21.0
+offset_top = -42.0
+offset_right = -21.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -101,7 +105,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(37, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-texture = ExtResource("4_bj6ij")
+texture = ExtResource("4_doxw5")
 expand_mode = 1
 stretch_mode = 5
 
@@ -121,7 +125,7 @@ alignment = 2
 custom_minimum_size = Vector2(37, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-texture = ExtResource("4_bj6ij")
+texture = ExtResource("5_he8gh")
 expand_mode = 1
 stretch_mode = 5
 

@@ -21,10 +21,6 @@ shader = ExtResource("3_n8sr3")
 shader_parameter/lod = 4.731
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6y87"]
-content_margin_left = 40.0
-content_margin_top = 15.0
-content_margin_right = 40.0
-content_margin_bottom = 15.0
 bg_color = Color(0.0313726, 0.0313726, 0.0313726, 0.419608)
 
 [node name="App" type="Control"]
@@ -126,24 +122,30 @@ script = ExtResource("4_df76v")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = -1
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -386.0
-offset_top = -397.0
+offset_top = -373.0
 offset_right = 386.0
-offset_bottom = -71.0
+offset_bottom = -215.0
 grow_horizontal = 2
-grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_w6y87")
 
-[node name="Description" type="VBoxContainer" parent="PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 25
+
+[node name="Description" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Title" type="Label" parent="PanelContainer/Description"]
+[node name="Title" type="Label" parent="PanelContainer/MarginContainer/Description"]
 visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 38
@@ -151,11 +153,11 @@ text = "Game name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Description" type="Label" parent="PanelContainer/Description"]
+[node name="Description" type="Label" parent="PanelContainer/MarginContainer/Description"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 24
-text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. "
+text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 vertical_alignment = 1
 autowrap_mode = 3
 

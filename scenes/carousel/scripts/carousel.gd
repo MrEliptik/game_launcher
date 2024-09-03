@@ -22,6 +22,9 @@ func _input(event: InputEvent):
 func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Array:
 	var count: int = 0
 	for key in to_create.keys():
+		if to_create[key].has("visible"):
+			if not to_create[key]["visible"]: continue
+		
 		var instance: Button = game_button.instantiate()
 		instance.game_name = key
 		instance.properties = to_create[key]
