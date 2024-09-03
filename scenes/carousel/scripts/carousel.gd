@@ -20,7 +20,7 @@ func _input(event: InputEvent):
 		get_viewport().set_input_as_handled()
 		
 func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Array:
-	var count: int = 0
+	var game_buttons: Array = []
 	for key in to_create.keys():
 		if to_create[key].has("visible"):
 			if not to_create[key]["visible"]: continue
@@ -28,9 +28,17 @@ func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Arr
 		var instance: Button = game_button.instantiate()
 		instance.game_name = key
 		instance.properties = to_create[key]
-		add_child(instance)
-		instance.position -= instance.size / 2.0
-		instance.position.x += (instance.size.x + button_offset.x) * count
+		game_buttons.append(instance)
+		
+	# Sort using order values
+	game_buttons.sort_custom(sort_btns_ascending)
+	
+	# Add child in the correct order
+	var count: int = 0
+	for btn in game_buttons:
+		add_child(btn)
+		btn.position -= btn.size / 2.0
+		btn.position.x += (btn.size.x + button_offset.x) * count
 		count += 1
 	
 	if get_child_count() > 0: 
@@ -38,6 +46,14 @@ func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Arr
 		get_child(0).call_deferred("grab_focus")
 		
 	return get_children() 
+
+func sort_btns_ascending(a, b):
+	if not a.properties.has("order") and not b.properties.has("order"): return false
+	if not a.properties.has("order") and b.properties.has("order"): return false
+	if a.properties.has("order") and not b.properties.has("order"): return true
+	if a.properties["order"] < b.properties["order"]:
+		return true
+	return false
 
 func move_left() -> void:
 	var idx: int = 0
