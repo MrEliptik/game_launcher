@@ -185,7 +185,14 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 		return
 
 	# Fetch the data for each section.
-	dict["executable"] = dir.path_join(config.get_value("GAME", "executable"))
+	var exe_path: String = config.get_value("GAME", "executable")
+	# Check if exe is "local" to the launcher or a full path
+	# If basename is the same as exe_path, it means it not a full path
+	# with subdirs, but the exe name alone
+	if exe_path.get_basename() != exe_path:
+		dict["executable"] = exe_path
+	else:
+		dict["executable"] = dir.path_join(exe_path)
 	dict["capsule"] = dir.path_join(config.get_value("GAME", "capsule"))
 	dict["bg"] = dir.path_join(config.get_value("GAME", "background"))
 	dict["description"] = config.get_value("GAME", "description")
