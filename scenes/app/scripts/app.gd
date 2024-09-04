@@ -26,7 +26,17 @@ var curr_game_btn: Button = null
 
 var qr_generator: QrCode = null
 
+var relaunch_on_crash: bool = false:
+	set(value):
+		relaunch_on_crash = value
+		set_physics_process(value)
+
+var launched_game_name: String = ""
+
 func _ready() -> void:
+	# use physics process to watch for game crashes
+	set_physics_process(false)
+	
 	add_child(update_checker)
 	update_checker.get_latest_version()
 	update_checker.release_parsed.connect(on_released_parsed)
@@ -206,6 +216,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["visible"] = config.get_value("SETTINGS", "visible")
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
 	dict["playable"] = config.get_value("SETTINGS", "playable", true)
+	dict["relaunch_on_crash"] = config.get_value("SETTINGS", "relaunch_on_crash", true)
 
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
@@ -217,11 +228,17 @@ func launch_game(game_name: String) -> void:
 	else:
 		pid_watching = OS.create_process(executable_path, [])
 	timer.start()
+	
+	launched_game_name = game_name
+	if games[game_name].has("relaunch_on_crash") and games[game_name]["relaunch_on_crash"]:
+		relaunch_on_crash = true
 
 func stop_game(pid: int) -> void:
 	if pid < 0: return
 	games_container.can_move = true
 	OS.kill(pid)
+	relaunch_on_crash = false
+	launched_game_name = ""
 
 func on_timer_timeout() -> void:
 	if OS.is_process_running(pid_watching):
@@ -289,3 +306,16 @@ func on_released_parsed(release: Dictionary) -> void:
 	else:
 		version_btn.text = "You have the latest version: " + release["version"]
 	version_btn.uri = release["url"]
+
+# use physics process to watch for game crashes
+func _physics_process(_delta: float) -> void:
+	# windows was closed or alt f4
+	if OS.get_process_exit_code(pid_watching) == 0:
+		pid_watching = -1
+		launched_game_name = ""
+		relaunch_on_crash = false
+		return
+	
+	# crash / taskmanager
+	if OS.get_process_exit_code(pid_watching) > 0:
+		launch_game(launched_game_name)
