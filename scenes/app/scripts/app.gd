@@ -193,7 +193,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	# Check if exe is "local" to the launcher or a full path
 	# If basename is the same as exe_path, it means it not a full path
 	# with subdirs, but the exe name alone
-	if exe_path.get_basename() != exe_path:
+	if exe_path.get_file() != exe_path:
 		dict["executable"] = exe_path
 	else:
 		dict["executable"] = dir.path_join(exe_path)
