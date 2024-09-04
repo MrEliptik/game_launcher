@@ -4,7 +4,9 @@ extends Control
 @export var default_bg: Texture
 
 var pid_watching: int = -1
+var pid_python: int = -1
 var games: Dictionary
+var launcher_settings: Dictionary
 var curr_game_btn: Button = null
 
 @onready var bg: TextureRect = $BG
@@ -19,6 +21,7 @@ var curr_game_btn: Button = null
 @onready var qr_label: Label = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRLabel
 
 @onready var update_checker := UpdateChecker.new()
+@onready var global_shortcut: GlobalShortcut 
 
 var qr_generator: QrCode = null
 
@@ -29,8 +32,16 @@ func _ready() -> void:
 	
 	configure_timer()
 	var base_dir: String = ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
+	read_launcher_config(base_dir.path_join("launcher_config.ini"), launcher_settings)
+	if launcher_settings["shortcut_kill_game"] != null and launcher_settings["shortcut_kill_game"] != "":
+		# Launch python script
+		start_python_shortcut_listener(base_dir.path_join("shortcut_listener.py"))
+		global_shortcut = GlobalShortcut.new()
+		
 	create_game_folder(base_dir)
 	parse_games(base_dir.path_join("games"))
+	
+	SignalBus.shortcut_close_game_pressed.connect(func(): stop_game(pid_watching))
 	
 	#configure QR generator
 	qr_generator = QrCode.new()
@@ -51,6 +62,7 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		print("About to quit, killing process")
 		stop_game(pid_watching)
+		stop_game(pid_python)
 		
 		# Maybe use a softer method, by sending a WM_CLOSE message first
 		# windows only
@@ -74,6 +86,22 @@ func configure_timer() -> void:
 	timer.one_shot = false
 	timer.wait_time = 1.0
 	timer.timeout.connect(on_timer_timeout)
+
+func read_launcher_config(path: String, dict: Dictionary):
+	var config = ConfigFile.new()
+	# Load data from a file.
+	var err = config.load(path)
+	# If the file didn't load, ignore it.
+	if err != OK:
+		return
+	dict["fullscreen"] = config.get_value("SETTINGS", "fullscreen")
+	dict["shortcut_kill_game"] = config.get_value("SETTINGS", "shortcut_kill_game")
+	if dict["fullscreen"]:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+func start_python_shortcut_listener(path: String) -> void:
+	pid_python = OS.create_process("python", [path])
+	print("Python running at: ", pid_python)
 
 func create_game_folder(base_dir: String) -> void:
 	var dir = DirAccess.open(base_dir)
@@ -182,7 +210,7 @@ func launch_game(game_name: String) -> void:
 	timer.start()
 
 func stop_game(pid: int) -> void:
-	if pid_watching < 0: return
+	if pid < 0: return
 	games_container.can_move = true
 	OS.kill(pid)
 

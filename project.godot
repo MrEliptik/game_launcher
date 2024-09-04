@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+SignalBus="*res://autoload/signal_bus.gd"
 FocusChecker="*res://autoload/focus_checker.gd"
 
 [display]
