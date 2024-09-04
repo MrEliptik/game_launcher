@@ -33,10 +33,9 @@ func _ready() -> void:
 	configure_timer()
 	var base_dir: String = ProjectSettings.globalize_path("res://") if OS.has_feature("editor") else OS.get_executable_path().get_base_dir()
 	read_launcher_config(base_dir.path_join("launcher_config.ini"), launcher_settings)
-	if launcher_settings["shortcut_kill_game"] != null:
+	if launcher_settings["shortcut_kill_game"] != null and launcher_settings["shortcut_kill_game"] != "":
 		# Launch python script
 		start_python_shortcut_listener(base_dir.path_join("shortcut_listener.py"))
-		
 		global_shortcut = GlobalShortcut.new()
 		
 	create_game_folder(base_dir)
