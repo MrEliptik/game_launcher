@@ -5,6 +5,7 @@ signal focused(who: Button)
 var game_name: String 
 var properties: Dictionary
 var tween: Tween
+var qr_texture: ImageTexture = null
 
 @onready var capsule: TextureRect = $Capsule
 @onready var cross = $Cross
@@ -13,7 +14,12 @@ var tween: Tween
 @onready var platform: Label = $InfoContainer/PlatformContainer/Platform
 @onready var player_nb: Label = $InfoContainer/PlayerContainer/PlayerNb
 
+@onready var qr_generator = QrCode.new()
+
 func _ready() -> void:
+	#configure QR generator
+	qr_generator.error_correct_level = QrCode.ErrorCorrectionLevel.LOW
+	
 	pivot_offset = size / 2.0
 	
 	cross.visible = false
@@ -37,6 +43,13 @@ func _ready() -> void:
 	
 	if properties.has("players_nb"):
 		player_nb.text = properties["players_nb"]
+		
+	# Also works in .ini has no "qr_url" property
+	var qr_url: String = properties.get("qr_url") if properties.get("qr_url") else ""
+	if not qr_url.is_empty():
+		var time_before: float = Time.get_ticks_usec()
+		qr_texture = qr_generator.get_texture(qr_url)
+		print("QR gen (ms): ", (Time.get_ticks_usec() - time_before)/1000.0) 
 
 func load_image_texture(path: String) -> ImageTexture:
 	var capsule_im: Image = Image.new()

@@ -24,8 +24,6 @@ var curr_game_btn: Button = null
 @onready var update_checker := UpdateChecker.new()
 @onready var global_shortcut: GlobalShortcut 
 
-var qr_generator: QrCode = null
-
 var relaunch_on_crash: bool = false:
 	set(value):
 		relaunch_on_crash = value
@@ -53,10 +51,6 @@ func _ready() -> void:
 	parse_games(base_dir.path_join("games"))
 	
 	SignalBus.shortcut_close_game_pressed.connect(func(): stop_game(pid_watching))
-	
-	#configure QR generator
-	qr_generator = QrCode.new()
-	qr_generator.error_correct_level = QrCode.ErrorCorrectionLevel.LOW
 	
 	if games.is_empty():
 		no_game_found.visible = true
@@ -263,13 +257,8 @@ func on_game_btn_focused(who: Button) -> void:
 		not_playable.visible = not playable
 		description.text += who.properties["description"]
 	
-	# Also works in .ini has no "qr_url" property
-	var qr_url: String = who.properties.get("qr_url") if who.properties.get("qr_url") else ""
-	if not qr_url.is_empty():
-		var time_before: float = Time.get_ticks_usec()
-		var texture: ImageTexture = qr_generator.get_texture(qr_url)
-		print("QR gen (ms): ", (Time.get_ticks_usec() - time_before)/1000.0) 
-		qr_rect.texture = texture
+	if who.qr_texture != null:
+		qr_rect.texture = who.qr_texture
 		qr_container.visible = true
 		qr_label.text = who.properties["qr_label"]
 	else:
