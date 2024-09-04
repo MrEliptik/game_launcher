@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Game launcher"
-config/version="0.0.4"
+config/version="0.0.5"
 config/tags=PackedStringArray("tool")
 run/main_scene="res://scenes/app/app.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
