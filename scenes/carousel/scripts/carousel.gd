@@ -5,20 +5,44 @@ extends Control
 var tween: Tween
 
 var can_move: bool = true
+var can_move_right: bool = true
+var can_move_left: bool = true
 
 func _ready():
 	pass # Replace with function body.
 
 func _input(event: InputEvent):
-	if event.is_action_pressed("ui_left"): 
+	if event.is_action_pressed("ui_left"):
+		if can_move_left:
+			can_move_left = false
+			move_left()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_released("ui_left") and not can_move_left:
+		can_move_left = true
+		get_viewport().set_input_as_handled()
+		
+	if event.is_action_pressed("ui_right"):
+		if can_move_right:
+			can_move_right = false
+			move_right()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_released("ui_right") and not can_move_right:
+		can_move_right = true
+		get_viewport().set_input_as_handled()
+
+func _process(delta: float) -> void:
+	return
+	if Input.is_action_just_pressed("ui_left"):
+		print("Left: ", Input.get_action_strength("ui_left"))
 		if can_move:
 			move_left()
 		get_viewport().set_input_as_handled()
-	elif event.is_action_pressed("ui_right"):
+	elif Input.is_action_just_pressed("ui_right"):
+		print("Right: ", Input.get_action_strength("ui_right"))
 		if can_move:
 			move_right()
 		get_viewport().set_input_as_handled()
-		
+
 func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Array:
 	var game_buttons: Array = []
 	for key in to_create.keys():
