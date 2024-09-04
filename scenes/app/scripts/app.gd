@@ -14,6 +14,7 @@ var curr_game_btn: Button = null
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
 @onready var title: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/Title
+@onready var not_playable: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/NotPlayable
 @onready var description: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/Description
 @onready var version_btn = $VersionBtn
 @onready var qr_container: VBoxContainer = $PanelContainer/MarginContainer/HBoxContainer/QRContainer
@@ -197,6 +198,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["order"] = config.get_value("SETTINGS", "order")
 	dict["visible"] = config.get_value("SETTINGS", "visible")
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
+	dict["playable"] = config.get_value("SETTINGS", "playable", true)
 
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
@@ -230,7 +232,12 @@ func on_game_btn_focused(who: Button) -> void:
 	if not who.properties.has("description"):
 		description.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 	else:
-		description.text = who.properties["description"]
+		# clear previous description to allow string concat
+		description.text = ""
+		# disable non playable games
+		var playable: bool =  who.properties.get("playable") if who.properties.get("playable") else false
+		not_playable.visible = not playable
+		description.text += who.properties["description"]
 	
 	# Also works in .ini has no "qr_url" property
 	var qr_url: String = who.properties.get("qr_url") if who.properties.get("qr_url") else ""

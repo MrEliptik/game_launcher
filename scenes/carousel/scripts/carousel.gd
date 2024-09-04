@@ -30,6 +30,10 @@ func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Arr
 		instance.properties = to_create[key]
 		game_buttons.append(instance)
 		
+		# disable non playable games
+		var playable: bool =  instance.properties.get("playable") if instance.properties.get("playable") else false
+		instance.disabled = not playable
+		
 	# Sort using order values
 	game_buttons.sort_custom(sort_btns_ascending)
 	
@@ -40,6 +44,7 @@ func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Arr
 		btn.position -= btn.size / 2.0
 		btn.position.x += (btn.size.x + button_offset.x) * count
 		count += 1
+		
 	
 	if get_child_count() > 0: 
 		# Call deferred to make sure the app has time to connect focus signal and react accordingly

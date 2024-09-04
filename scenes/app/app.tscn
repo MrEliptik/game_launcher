@@ -162,6 +162,14 @@ text = "Game name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="NotPlayable" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/Description"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(1, 0, 0.216667, 1)
+theme_override_font_sizes/font_size = 26
+text = "NOT PLAYBLE"
+vertical_alignment = 1
+
 [node name="Description" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/Description"]
 layout_mode = 2
 size_flags_vertical = 1
