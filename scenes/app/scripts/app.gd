@@ -12,6 +12,7 @@ var curr_game_btn: Button = null
 @onready var games_container: Control = $Games
 @onready var no_game_found = $NoGameFound
 @onready var title: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/Title
+@onready var not_playable: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/NotPlayable
 @onready var description: Label = $PanelContainer/MarginContainer/HBoxContainer/Description/Description
 @onready var version_btn = $VersionBtn
 @onready var qr_container: VBoxContainer = $PanelContainer/MarginContainer/HBoxContainer/QRContainer
@@ -169,7 +170,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["order"] = config.get_value("SETTINGS", "order")
 	dict["visible"] = config.get_value("SETTINGS", "visible")
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
-	dict["playable"] = config.get_value("SETTINGS", "playable")
+	dict["playable"] = config.get_value("SETTINGS", "playable", true)
 
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
@@ -207,8 +208,7 @@ func on_game_btn_focused(who: Button) -> void:
 		description.text = ""
 		# disable non playable games
 		var playable: bool =  who.properties.get("playable") if who.properties.get("playable") else false
-		if not playable:
-			description.text = "NOT PLAYABLE\n"
+		not_playable.visible = not playable
 		description.text += who.properties["description"]
 	
 	# Also works in .ini has no "qr_url" property
