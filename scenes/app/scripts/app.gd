@@ -266,13 +266,14 @@ func on_game_btn_focused(who: Button) -> void:
 	# Also works in .ini has no "qr_url" property
 	var qr_url: String = who.properties.get("qr_url") if who.properties.get("qr_url") else ""
 	if not qr_url.is_empty():
+		var time_before: float = Time.get_ticks_usec()
 		var texture: ImageTexture = qr_generator.get_texture(qr_url)
+		print("QR gen (ms): ", (Time.get_ticks_usec() - time_before)/1000.0) 
 		qr_rect.texture = texture
 		qr_container.visible = true
 		qr_label.text = who.properties["qr_label"]
 	else:
 		qr_container.visible = false
-		#TODO resize the description label accordingly?
 	
 	title.text = who.game_name
 
