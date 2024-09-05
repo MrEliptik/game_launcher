@@ -17,6 +17,7 @@ A simple game launcher for developers to showcase their games. Especially useful
 5. The capsule must be named **capsule** with the following extensions supported: jpg, jpeg, png
 6. The background image bust be named **bg** with the following extensions supported: jpg, jpeg, png
 7. In **description.txt**, put the description you want to see below your game capsule in the launcher
+8. Optionally, consider adding a **config.ini** for [advanced setup](#advanced-setup).
 
 Here's an example folder  
 game_launcher.exe  
@@ -24,9 +25,18 @@ game_launcher.exe
 │   ├── Game name  
 │   │   ├── game_executable.exe  
 │   │   ├── capsule.jpg  
-│   │   └── bg.jpg  
+│   │   ├── bg.jpg  
+│   │   └── config.ini  
 
-You can also check the **Fake** folder to see a game example
+You can also check the [**Fake**](games/Fake) folder to see a game example
+
+## Advanced Setup
+
+A **config.ini** can be used to customize a game. Using the config file you can set extended information such as release date, platforms, and even a QR code.
+
+See the example config.ini file in the [**Fake**](games/Fake/config_fake.ini) for a full list of properties.
+
+Note: If used, the "description" key will override the **description.txt**.
 
 ## How to navigate
 
