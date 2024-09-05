@@ -47,6 +47,7 @@ func _ready() -> void:
 		start_python_shortcut_listener(base_dir.path_join("shortcut_listener.py"))
 		global_shortcut = GlobalShortcut.new()
 		
+	set_window_title()
 	create_game_folder(base_dir)
 	parse_games(base_dir.path_join("games"))
 	
@@ -101,12 +102,17 @@ func read_launcher_config(path: String, dict: Dictionary):
 		return
 	dict["fullscreen"] = config.get_value("SETTINGS", "fullscreen")
 	dict["shortcut_kill_game"] = config.get_value("SETTINGS", "shortcut_kill_game")
+	dict["window_title"] = config.get_value("SETTINGS", "window_title")
 	if dict["fullscreen"]:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 func start_python_shortcut_listener(path: String) -> void:
 	pid_python = OS.create_process("python", [path])
 	print("Python running at: ", pid_python)
+
+func set_window_title() -> void:
+	if launcher_settings["window_title"] != null and launcher_settings["window_title"] != "":
+		get_window().title = launcher_settings["window_title"]
 
 func create_game_folder(base_dir: String) -> void:
 	var dir = DirAccess.open(base_dir)
