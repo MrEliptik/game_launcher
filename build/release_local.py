@@ -23,6 +23,8 @@ mac_template = "game_launcher_mac"
 
 templates = [windows_template, linux_template, mac_template]
 
+extra_files = ["launcher_config.ini", "shortcut_listener.py"]
+
 def export_template(template, build_path, build_nb):
     platform = template.split('_')[2]
     exe_name = ""
@@ -42,6 +44,9 @@ def export_template(template, build_path, build_nb):
     # "C:\Program Files\Godot\Godot_v4_1_3-stable_win64_exe\Godot_v4.1.3-stable_win64.exe" --headless --export-release "Linux/X11" /var/builds/project
     cmd = [godot_path, "--headless", "--export-release", template, os.path.join(build_path_template, exe_name)]
     print("    |---> Executing command: ", cmd)
+
+    for file in extra_files:
+        shutil.copy2(file, build_path_template)
 
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, encoding='utf-8') as sp:
         pass
