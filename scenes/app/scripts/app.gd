@@ -141,10 +141,10 @@ func parse_games(path: String) -> void:
 					#TODO: make functionnal with other platforms: mac
 					match extension:
 						"ini", "cfg":
-							parse_config(subdir.get_current_dir().path_join(file), subdir.get_current_dir(), games[file_name])
-							config_found = true
-							# Config file found, skipping all other files
-							break
+							if parse_config(subdir.get_current_dir().path_join(file), subdir.get_current_dir(), games[file_name]):
+								config_found = true
+								# Config file found and parsing OK, skipping all other files
+								break
 						"exe", "x86_64":
 							print(subdir.get_current_dir())
 							games[file_name]["executable"] = subdir.get_current_dir().path_join(file)
@@ -167,7 +167,7 @@ func parse_games(path: String) -> void:
 		file_name = dir.get_next()
 	print("Games: ", games)
 
-func parse_config(path: String, dir: String, dict: Dictionary):
+func parse_config(path: String, dir: String, dict: Dictionary) -> bool:
 	#[GAME]
 	#title = "Sample Game Title"
 	#executable = "game.exe"
@@ -191,7 +191,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	var err = config.load(path)
 	# If the file didn't load, ignore it.
 	if err != OK:
-		return
+		return false
 
 	# Fetch the data for each section.
 	var exe_path: String = config.get_value("GAME", "executable")
@@ -216,6 +216,8 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
 	dict["playable"] = config.get_value("SETTINGS", "playable", true)
 	dict["relaunch_on_crash"] = config.get_value("SETTINGS", "relaunch_on_crash", true)
+	
+	return true
 
 func set_default_config(dict: Dictionary):
 	dict["visible"] = true
