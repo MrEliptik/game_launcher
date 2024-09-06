@@ -135,6 +135,7 @@ func parse_games(path: String) -> void:
 		# We found a game, explore its content
 		if dir.current_is_dir():
 			print("Found directory: " + file_name)
+			var config_found: bool = false
 			games[file_name] = {}
 			var subdir_path: String = path.path_join(file_name)
 			var subdir = DirAccess.open(subdir_path)
@@ -146,9 +147,10 @@ func parse_games(path: String) -> void:
 					#TODO: make functionnal with other platforms: mac
 					match extension:
 						"ini", "cfg":
-							parse_config(subdir.get_current_dir().path_join(file), subdir.get_current_dir(), games[file_name])
-							# Config file found, skipping all other files
-							break
+							if parse_config(subdir.get_current_dir().path_join(file), subdir.get_current_dir(), games[file_name]):
+								config_found = true
+								# Config file found and parsing OK, skipping all other files
+								break
 						"exe", "x86_64":
 							print(subdir.get_current_dir())
 							games[file_name]["executable"] = subdir.get_current_dir().path_join(file)
@@ -164,11 +166,14 @@ func parse_games(path: String) -> void:
 								games[file_name]["description"] = content
 					
 				file = subdir.get_next()
+		
+			if not config_found:
+				set_default_config(games[file_name])
 			
 		file_name = dir.get_next()
 	print("Games: ", games)
 
-func parse_config(path: String, dir: String, dict: Dictionary):
+func parse_config(path: String, dir: String, dict: Dictionary) -> bool:
 	#[GAME]
 	#title = "Sample Game Title"
 	#executable = "game.exe"
@@ -192,7 +197,7 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	var err = config.load(path)
 	# If the file didn't load, ignore it.
 	if err != OK:
-		return
+		return false
 
 	# Fetch the data for each section.
 	var exe_path: String = config.get_value("GAME", "executable")
@@ -217,6 +222,14 @@ func parse_config(path: String, dir: String, dict: Dictionary):
 	dict["pinned"] = config.get_value("SETTINGS", "pinned")
 	dict["playable"] = config.get_value("SETTINGS", "playable", true)
 	dict["relaunch_on_crash"] = config.get_value("SETTINGS", "relaunch_on_crash", true)
+	
+	return true
+
+func set_default_config(dict: Dictionary):
+	dict["visible"] = true
+	dict["pinned"] = false
+	dict["playable"] = true
+	dict["relaunch_on_crash"] = true
 
 func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
