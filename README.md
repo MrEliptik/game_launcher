@@ -44,6 +44,7 @@ The launcher itself is configured using [launcher_config.ini](launcher_config.in
 
 - `shortcut_kill_game`: global shortcut used to kill a launched game. Requires [shortcut_listener.py](shortcut_listener.py) to be running. See [shortcut configuration](Shortcut configuration)
 - `fullscreen`: true|false, start the launcher in fullscreen  
+- `window_title`: if windowed, the title you see in the title bar
 
 ### Shortcut configuration with Python
 
