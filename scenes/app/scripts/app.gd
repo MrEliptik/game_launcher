@@ -30,6 +30,11 @@ var relaunch_on_crash: bool = false:
 		set_physics_process(value)
 
 var launched_game_name: String = ""
+# steam games may take a while to launch
+var shell_timeout_retries: int = 0
+var max_run_with_shell_timeout_retries: int = 15
+var is_steam_launch: bool = false
+var prev_pids: Array[int] = []
 
 func _ready() -> void:
 	# use physics process to watch for game crashes
@@ -92,6 +97,7 @@ func configure_timer() -> void:
 	timer.one_shot = false
 	timer.wait_time = 1.0
 	timer.timeout.connect(on_timer_timeout)
+	timer.timeout.connect(_crash_process)
 
 func read_launcher_config(path: String, dict: Dictionary):
 	var config = ConfigFile.new()
@@ -201,6 +207,10 @@ func parse_config(path: String, dir: String, dict: Dictionary) -> bool:
 
 	# Fetch the data for each section.
 	var exe_path: String = config.get_value("GAME", "executable")
+	if OS.has_feature("windows"):
+		if exe_path.get_extension() == "lnk" or exe_path.begins_with("steam://"):
+			dict["run_with_shell"] = true
+			dict["exe_name"] = config.get_value("GAME", "exe_name", "")
 	# Check if exe is "local" to the launcher or a full path
 	# If basename is the same as exe_path, it means it not a full path
 	# with subdirs, but the exe name alone
@@ -214,7 +224,7 @@ func parse_config(path: String, dir: String, dict: Dictionary) -> bool:
 	dict["players_nb"] = config.get_value("GAME", "players_nb")
 	dict["release_date"] = config.get_value("GAME", "release_date")
 	dict["platforms"] = config.get_value("GAME", "platforms")
-	dict["arguments"] = config.get_value("GAME", "arguments")
+	dict["arguments"] = config.get_value("GAME", "arguments", "")
 	dict["qr_url"] = config.get_value("GAME", "qr_url", "")
 	dict["qr_label"] = config.get_value("GAME", "qr_label", "")
 	dict["order"] = config.get_value("SETTINGS", "order")
@@ -235,11 +245,54 @@ func launch_game(game_name: String) -> void:
 	if not games[game_name].has("executable"): return
 	games_container.can_move = false
 	var executable_path: String = games[game_name]["executable"]
-	if games[game_name].has("arguments"):
-		var args: PackedStringArray = games[game_name]["arguments"].rsplit(",", false)
-		pid_watching = OS.create_process(executable_path, args)
+	is_steam_launch = false
+	if games[game_name].has("run_with_shell"):
+		prev_pids = []
+		# get PIDs from the same process that may already be running
+		var regex: RegEx = RegEx.new()
+		# regex that matches space,any number of ints, space because of tasklist formatting
+		#                  PID
+		# fake.exe         37800 Console                    1     54,716 K
+		regex.compile("\\s\\d+\\s")
+		var output:= []
+		OS.execute("cmd.exe", ["/c", "tasklist", "|", "find", "\"" + games[game_name]["exe_name"] + "\""], output)
+		var list = output[0].split("\n")
+		for entry in list:
+			if entry.is_empty(): continue
+			prev_pids.append(int(regex.search(entry).strings[0].strip_edges()))
+		
+		var dict: Dictionary = {}
+		if games[game_name].has("arguments") and not games[game_name]["arguments"].is_empty():
+			var args: PackedStringArray = games[game_name]["arguments"].rsplit(",", false)
+			dict = OS.execute_with_pipe("cmd.exe", ["/c", "start", "/b", games[game_name]["executable"], args])
+		else:
+			dict = OS.execute_with_pipe("cmd.exe", ["/c", "start", "\"" + games[game_name]["exe_name"] + "\"", "/b",games[game_name]["executable"]])
+		
+		
+		if games[game_name]["executable"].begins_with("steam://"):
+			is_steam_launch = true
+			shell_timeout_retries = 0
+		
+		# dont bother looking for pid right away for steam launch since they take a long while
+		else:
+			OS.execute("cmd.exe", ["/c", "tasklist", "|", "find", "\"" + games[game_name]["exe_name"] + "\""], output)
+			list = output[1].split("\n")
+			for entry in list:
+				#if a PID was in the previous list it means its a preexisting process
+				if entry.is_empty(): continue
+				var pid = int(regex.search(entry).strings[0].strip_edges())
+				if pid in prev_pids: continue
+				pid_watching = pid
+	
+	
+	# direct executable
 	else:
-		pid_watching = OS.create_process(executable_path, [])
+		if games[game_name].has("arguments"):
+			var args: PackedStringArray = games[game_name]["arguments"].rsplit(",", false)
+			pid_watching = OS.create_process(executable_path, args)
+		else:
+			pid_watching = OS.create_process(executable_path, [])
+			
 	timer.start()
 	
 	launched_game_name = game_name
@@ -254,7 +307,25 @@ func stop_game(pid: int) -> void:
 	launched_game_name = ""
 
 func on_timer_timeout() -> void:
-	if OS.is_process_running(pid_watching):
+	if is_steam_launch:
+		if shell_timeout_retries < max_run_with_shell_timeout_retries:
+			shell_timeout_retries += 1
+			return
+		else:
+			# look for PID
+			var regex: RegEx = RegEx.new()
+			regex.compile("\\s\\d+\\s")
+			var output:= []
+			OS.execute("cmd.exe", ["/c", "tasklist", "|", "find", "\"" + games[launched_game_name]["exe_name"] + "\""], output)
+			var list: PackedStringArray = output[0].split("\n")
+			for entry in list:
+				#if a PID was in the previous list it means its a preexisting process
+				if entry.is_empty(): continue
+				var pid = int(regex.search(entry).strings[0].strip_edges())
+				if pid in prev_pids: continue
+				pid_watching = pid
+	
+	if is_watched_process_running():
 		print("Running")
 	else:
 		print("Stopped")
@@ -317,7 +388,11 @@ func on_released_parsed(release: Dictionary) -> void:
 	version_btn.uri = release["url"]
 
 # use physics process to watch for game crashes
-func _physics_process(_delta: float) -> void:
+func _crash_process() -> void:
+	if not relaunch_on_crash: return
+	# processes started from cmd have no way of getting the resulting exit code
+	if games[launched_game_name].has("run_with_shell"): return
+	
 	# windows was closed or alt f4
 	if OS.get_process_exit_code(pid_watching) == 0:
 		pid_watching = -1
@@ -328,3 +403,23 @@ func _physics_process(_delta: float) -> void:
 	# crash / taskmanager
 	if OS.get_process_exit_code(pid_watching) > 0:
 		launch_game(launched_game_name)
+
+func is_watched_process_running() -> bool:
+	if not launched_game_name.is_empty() and games[launched_game_name].has("run_with_shell"):
+		var output:= []
+		OS.execute("cmd.exe", ["/c", "tasklist", "|", "find", "\"" +  str(pid_watching) + "\""], output)
+		# return true if pid is found 
+		var regex: RegEx = RegEx.new()
+		# regex that matches space,any number of ints, space because of tasklist formatting
+		#                  PID
+		# fake.exe         37800 Console                    1     54,716 K
+		regex.compile("\\s\\d+\\s")
+		var list = output[0].split("\n")
+		var pids : Array[int] = []
+		for entry in list:
+			if entry.is_empty(): continue
+			pids.append(int(regex.search(entry).strings[0].strip_edges()))
+		
+		return true if pid_watching in pids else false
+	else:
+		return OS.is_process_running(pid_watching)
