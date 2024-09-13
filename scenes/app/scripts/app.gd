@@ -8,6 +8,7 @@ var pid_python: int = -1
 var games: Dictionary
 var launcher_settings: Dictionary
 var curr_game_btn: Button = null
+var gamepad_kill_btn_pressed: Array = []
 
 @onready var bg: TextureRect = $BG
 @onready var timer: Timer = Timer.new()
@@ -47,6 +48,11 @@ func _ready() -> void:
 		start_python_shortcut_listener(base_dir.path_join("shortcut_listener.py"))
 		global_shortcut = GlobalShortcut.new()
 		
+	if not launcher_settings["shortcut_kill_game_gamepad"].is_empty():
+		print(launcher_settings["shortcut_kill_game_gamepad"])
+		for x in launcher_settings["shortcut_kill_game_gamepad"]:
+			gamepad_kill_btn_pressed.append(false)
+		
 	set_window_title()
 	create_game_folder(base_dir)
 	parse_games(base_dir.path_join("games"))
@@ -77,6 +83,20 @@ func _notification(what: int) -> void:
 		#OS.execute(taskkill, ("/PID", str(pid_watching)])
 
 func _input(event):
+	# This feels a bit shit. Rewrite better if possbile.
+	# Right now we're assuming we want to use gamepad device 0 and 1
+	if event is InputEventJoypadButton:
+		var shortcut_pressed_0: bool = true
+		var shortcut_pressed_1: bool = true
+		if event.button_index in launcher_settings["shortcut_kill_game_gamepad"]:
+			for x in launcher_settings["shortcut_kill_game_gamepad"]:
+				if not Input.is_joy_button_pressed(0, x):
+					shortcut_pressed_0 = false
+				if not Input.is_joy_button_pressed(1, x):
+					shortcut_pressed_1 = false
+			if shortcut_pressed_0 or shortcut_pressed_1:
+				stop_game(pid_watching)
+	
 	if Input.is_action_just_pressed("toggle_fullscreen"):
 		if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN:
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
@@ -102,6 +122,7 @@ func read_launcher_config(path: String, dict: Dictionary):
 		return
 	dict["fullscreen"] = config.get_value("SETTINGS", "fullscreen")
 	dict["shortcut_kill_game"] = config.get_value("SETTINGS", "shortcut_kill_game")
+	dict["shortcut_kill_game_gamepad"] = config.get_value("SETTINGS", "shortcut_kill_game_gamepad", [])
 	dict["window_title"] = config.get_value("SETTINGS", "window_title")
 	if dict["fullscreen"]:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)

@@ -30,19 +30,6 @@ func _input(event: InputEvent):
 		can_move_right = true
 		get_viewport().set_input_as_handled()
 
-func _process(delta: float) -> void:
-	return
-	if Input.is_action_just_pressed("ui_left"):
-		print("Left: ", Input.get_action_strength("ui_left"))
-		if can_move:
-			move_left()
-		get_viewport().set_input_as_handled()
-	elif Input.is_action_just_pressed("ui_right"):
-		print("Right: ", Input.get_action_strength("ui_right"))
-		if can_move:
-			move_right()
-		get_viewport().set_input_as_handled()
-
 func create_game_buttons(game_button: PackedScene, to_create: Dictionary) -> Array:
 	var game_buttons: Array = []
 	for key in to_create.keys():
