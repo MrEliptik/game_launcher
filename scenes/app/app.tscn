@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dh01oxe50pj27"]
+[gd_scene load_steps=18 format=3 uid="uid://dh01oxe50pj27"]
 
 [ext_resource type="Script" path="res://scenes/app/scripts/app.gd" id="1_ov0up"]
 [ext_resource type="PackedScene" uid="uid://dweckt5oraox7" path="res://scenes/game_button/game_button.tscn" id="2_t5myg"]
@@ -9,6 +9,8 @@
 [ext_resource type="Script" path="res://scenes/carousel/scripts/carousel.gd" id="4_yrr54"]
 [ext_resource type="Texture2D" uid="uid://dph8j6sb0fjbv" path="res://scenes/game_button/visuals/bg_test.png" id="5_o0uvn"]
 [ext_resource type="Script" path="res://scenes/app/scripts/bg_blend.gd" id="6_2ddv3"]
+[ext_resource type="Script" path="res://scenes/video_player/scripts/video_player.gd" id="10_dod4b"]
+[ext_resource type="Texture2D" uid="uid://dr4kg5w8jskhd" path="res://shared/visuals/play.png" id="10_gt0gt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_psg6v"]
 shader = ExtResource("4_7um57")
@@ -138,7 +140,7 @@ anchor_bottom = 0.5
 offset_left = -478.0
 offset_top = 140.0
 offset_right = 478.0
-offset_bottom = 307.0
+offset_bottom = 432.0
 grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 0
@@ -185,7 +187,6 @@ vertical_alignment = 1
 autowrap_mode = 3
 
 [node name="QRContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/separation = 5
 
@@ -208,6 +209,32 @@ label_settings = SubResource("LabelSettings_wrab5")
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="VideoBtn" type="Button" parent="PanelContainer/MarginContainer/HBoxContainer/QRContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/HBoxContainer/QRContainer/VideoBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/HBoxContainer/QRContainer/VideoBtn/HBoxContainer"]
+custom_minimum_size = Vector2(25, 25)
+layout_mode = 2
+texture = ExtResource("10_gt0gt")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/HBoxContainer/QRContainer/VideoBtn/HBoxContainer"]
+layout_mode = 2
+text = "Play trailer"
+label_settings = SubResource("LabelSettings_wrab5")
+
 [node name="MouseFilter" type="ColorRect" parent="."]
 visible = false
 self_modulate = Color(1, 1, 1, 0)
@@ -217,3 +244,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="VideoPlayer" type="VideoStreamPlayer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand = true
+loop = true
+script = ExtResource("10_dod4b")
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/HBoxContainer/QRContainer/VideoBtn" to="." method="_on_video_btn_pressed"]
