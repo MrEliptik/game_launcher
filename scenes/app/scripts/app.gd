@@ -21,6 +21,8 @@ var gamepad_kill_btn_pressed: Array = []
 @onready var qr_container: VBoxContainer = $PanelContainer/MarginContainer/HBoxContainer/QRContainer
 @onready var qr_rect: TextureRect = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRRect
 @onready var qr_label: Label = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRLabel
+@onready var video_btn: Button = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/VideoBtn
+@onready var video_player: VideoPlayer = $VideoPlayer
 
 @onready var update_checker := UpdateChecker.new()
 @onready var global_shortcut: GlobalShortcut 
@@ -233,6 +235,7 @@ func parse_config(path: String, dir: String, dict: Dictionary) -> bool:
 	dict["bg"] = dir.path_join(config.get_value("GAME", "background"))
 	dict["description"] = config.get_value("GAME", "description")
 	dict["players_nb"] = config.get_value("GAME", "players_nb")
+	dict["video"] = config.get_value("GAME", "video", null)
 	dict["release_date"] = config.get_value("GAME", "release_date")
 	dict["platforms"] = config.get_value("GAME", "platforms")
 	dict["arguments"] = config.get_value("GAME", "arguments")
@@ -262,6 +265,7 @@ func launch_game(game_name: String) -> void:
 	else:
 		pid_watching = OS.create_process(executable_path, [])
 	timer.start()
+	SignalBus.game_launched.emit()
 	
 	launched_game_name = game_name
 	if games[game_name].has("relaunch_on_crash") and games[game_name]["relaunch_on_crash"]:
@@ -273,6 +277,7 @@ func stop_game(pid: int) -> void:
 	OS.kill(pid)
 	relaunch_on_crash = false
 	launched_game_name = ""
+	SignalBus.game_closed.emit()
 
 func on_timer_timeout() -> void:
 	if OS.is_process_running(pid_watching):
@@ -281,12 +286,24 @@ func on_timer_timeout() -> void:
 		print("Stopped")
 		timer.stop()
 		pid_watching = -1
+		SignalBus.game_closed.emit()
 		if curr_game_btn:
 			curr_game_btn.button_pressed = false
 		games_container.can_move = true
 		DisplayServer.window_move_to_foreground()
 
 func on_game_btn_focused(who: Button) -> void:
+	if who.properties.has("video") and who.properties["video"] or who.properties["video"] != "":
+		var video_stream_theora = VideoStreamTheora.new()
+		# File extension is ignored, so it is possible to load Ogg Theora videos
+		# that have an `.ogg` extension this way.
+		video_stream_theora.file = who.properties["video"]
+		video_player.stream = video_stream_theora
+		video_btn.show()
+	else:
+		video_btn.hide()
+		video_player.stream = null
+	
 	if not who.properties.has("description"):
 		description.text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 	else:
@@ -349,3 +366,6 @@ func _physics_process(_delta: float) -> void:
 	# crash / taskmanager
 	if OS.get_process_exit_code(pid_watching) > 0:
 		launch_game(launched_game_name)
+
+func _on_video_btn_pressed() -> void:
+	video_player.play_video()
