@@ -235,7 +235,15 @@ func parse_config(path: String, dir: String, dict: Dictionary) -> bool:
 	dict["bg"] = dir.path_join(config.get_value("GAME", "background"))
 	dict["description"] = config.get_value("GAME", "description")
 	dict["players_nb"] = config.get_value("GAME", "players_nb")
-	dict["video"] = config.get_value("GAME", "video", null)
+	var video_path: String = config.get_value("GAME", "video", "")
+	# Check if video path is "local" to the launcher or a full path
+	# If basename is the same as video_path, it means it not a full path
+	# with subdirs, but the exe name alone
+	if video_path != "":
+		if video_path.get_file() != video_path:
+			dict["video"] = video_path
+		else:
+			dict["video"] = dir.path_join(video_path)
 	dict["release_date"] = config.get_value("GAME", "release_date")
 	dict["platforms"] = config.get_value("GAME", "platforms")
 	dict["arguments"] = config.get_value("GAME", "arguments")
@@ -293,7 +301,7 @@ func on_timer_timeout() -> void:
 		DisplayServer.window_move_to_foreground()
 
 func on_game_btn_focused(who: Button) -> void:
-	if who.properties.has("video") and who.properties["video"] or who.properties["video"] != "":
+	if who.properties.has("video") and who.properties["video"] != "":
 		var video_stream_theora = VideoStreamTheora.new()
 		# File extension is ignored, so it is possible to load Ogg Theora videos
 		# that have an `.ogg` extension this way.
