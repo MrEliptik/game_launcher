@@ -22,7 +22,7 @@ var gamepad_kill_btn_pressed: Array = []
 @onready var qr_rect: TextureRect = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRRect
 @onready var qr_label: Label = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/QRLabel
 @onready var video_btn: Button = $PanelContainer/MarginContainer/HBoxContainer/QRContainer/VideoBtn
-@onready var video_player: VideoPlayer = $VideoPlayer
+@onready var video_player: VideoPlayer = $AspectRatioContainer/VideoPlayer
 
 @onready var update_checker := UpdateChecker.new()
 @onready var global_shortcut: GlobalShortcut 

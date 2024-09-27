@@ -245,13 +245,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VideoPlayer" type="VideoStreamPlayer" parent="."]
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+ratio = 1.7778
+
+[node name="VideoPlayer" type="VideoStreamPlayer" parent="AspectRatioContainer"]
+layout_mode = 2
 expand = true
 loop = true
 script = ExtResource("10_dod4b")
