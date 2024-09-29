@@ -72,6 +72,14 @@ Right now, the launcher is only working with windows and linux. Supporting mac s
 
 For development, you can use the **games** folder present in the project using the same configuration as explained above.
 
+## Contributing
+To start contributing, open an issue about what you want to do if there's not one yet, clone the repo, do you changes and create a PR!
+
+Thanks to the contributors for their work 👇
+<a href="https://github.com/MrEliptik/game_launcher/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=MrEliptik/game_launcher" />
+</a>
+
 ## 💁‍♂️ About me
 
 Full time indie gamedev. You can find me everywhere 👇
